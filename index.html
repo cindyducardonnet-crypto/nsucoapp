@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NSUCO – Cotation & interprétation</title>
+<style>
+:root{--ink:#263238;--terra:#b7654a;--bg:#f6f3ef;--card:#fff;--green:#dfeae2;--amber:#f3e7c4;--red:#f2d5d0;--line:#d8d2cc}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:980px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#fff,#f4ebe6);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:14px}
+h1{margin:0;font-size:28px} .muted{color:#667078;font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px} h2{font-size:18px;margin:0 0 12px;color:var(--terra)}
+.row{display:grid;grid-template-columns:1.25fr repeat(4,.85fr);gap:7px;align-items:center;margin:7px 0}.row.head{font-size:12px;font-weight:700;color:#667078}
+select,input{width:100%;padding:10px;border:1px solid #c9c2bc;border-radius:10px;background:#fff;font-size:16px;color:#263238;-webkit-text-fill-color:#263238}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer} .primary{background:var(--terra);color:#fff}.secondary{background:#e9e5e1;color:var(--ink)}
+.scorebox{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.score{border-radius:14px;padding:12px;text-align:center;border:1px solid var(--line);background:#fafafa}.score b{display:block;font-size:23px}
+.result{border-radius:14px;padding:12px;margin:8px 0;border:1px solid var(--line)} .ok{background:var(--green)} .frag{background:var(--amber)} .bad{background:var(--red)}
+.tag{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.03em}.detail{font-size:13px;margin-top:5px}
+.conclusion{white-space:pre-wrap;background:#fafafa;border:1px dashed #bbb;border-radius:12px;padding:12px;font-size:14px;line-height:1.45}
+.note{font-size:12px;color:#616b70;line-height:1.45}.full{grid-column:1/-1}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.row{grid-template-columns:1.35fr repeat(4,.82fr);font-size:12px}.wrap{padding:10px}.scorebox{grid-template-columns:1fr 1fr}.scorebox .score:last-child{grid-column:1/-1}}
+@media print{body{background:#fff}.btns{display:none}.wrap{max-width:none}.card,.hero{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="hero">
+  <h1>NSUCO — Cotation & interprétation</h1>
+  <div class="muted">Saccades + poursuites • comparaison aux seuils de Maples P16 / P31 • 5 à 14 ans et +</div>
+ </div>
+
+ <div class="grid">
+  <section class="card">
+   <h2>Patient</h2>
+   <div class="meta">
+    <label>Âge
+      <select id="age">
+       <option value="5">5 ans</option><option value="6">6 ans</option><option value="7">7 ans</option>
+       <option value="8">8 ans</option><option value="9">9 ans</option><option value="10">10 ans</option>
+       <option value="11">11 ans</option><option value="12">12 ans</option><option value="13">13 ans</option>
+       <option value="14">14 ans et +</option>
+      </select>
+    </label>
+    <label>Sexe
+      <select id="sex"><option value="F">Fille / femme</option><option value="M">Garçon / homme</option></select>
+    </label>
+   </div>
+   <p class="note">Les normes publiées du NSUCO sont stratifiées par âge et sexe. Pour les ≥14 ans, la ligne « 14 ans et + » est utilisée.</p>
+  </section>
+
+  <section class="card">
+   <h2>Lecture automatique</h2>
+   <div class="scorebox">
+    <div class="score"><span>Saccades</span><b id="sTot">—</b><small>/20</small></div>
+    <div class="score"><span>Poursuites</span><b id="pTot">—</b><small>/20</small></div>
+    <div class="score"><span>Total descriptif</span><b id="gTot">—</b><small>/40</small></div>
+   </div>
+   <div id="global" class="result">Renseigne les 8 notes pour obtenir l’interprétation.</div>
+  </section>
+
+  <section class="card full">
+   <h2>Notes /5</h2>
+   <div class="row head"><div></div><div>Aptitude</div><div>Précision</div><div>Tête</div><div>Corps</div></div>
+   <div class="row"><b>Saccades</b>
+    <select class="scoreInput" id="sa"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><select class="scoreInput" id="sp"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+    <select class="scoreInput" id="sh"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><select class="scoreInput" id="sb"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+   </div>
+   <div class="row"><b>Poursuites</b>
+    <select class="scoreInput" id="pa"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><select class="scoreInput" id="pp"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+    <select class="scoreInput" id="ph"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select><select class="scoreInput" id="pb"><option value="">—</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+   </div>
+   <div class="btns">
+    <button type="button" class="primary" onclick="return calc();">Interpréter</button>
+    <button type="button" class="secondary" onclick="return resetAll();">Réinitialiser</button>
+    <button type="button" class="secondary" onclick="window.print(); return false;">Imprimer</button>
+    <button type="button" class="secondary" onclick="return copyConclusion();">Copier la conclusion</button>
+   </div>
+  </section>
+
+  <section class="card full">
+   <h2>Détail par critère</h2>
+   <div id="details"></div>
+  </section>
+
+  <section class="card full">
+   <h2>Conclusion prête à copier dans le BO</h2>
+   <div class="conclusion" id="conclusion">—</div>
+  </section>
+
+  <section class="card full">
+   <h2>Repères d’interprétation</h2>
+   <p class="note"><b>Vert :</b> score ≥ seuil P31 : dans les attentes au regard de ces seuils. 
+   <b>Jaune :</b> score ≥ P16 mais &lt; P31 : zone faible/fragile. 
+   <b>Rouge :</b> score &lt; P16 : performance déficitaire selon le seuil minimal acceptable.</p>
+   <p class="note"><b>Important :</b> le total /40 est affiché pour une lecture descriptive, mais les normes NSUCO s’interprètent critère par critère (aptitude, précision, tête, corps) et non à partir d’un seuil officiel du total. Toujours confronter au protocole de passation, à l’attention, aux plaintes fonctionnelles et aux autres tests (ex. DEM).</p>
+  </section>
+ </div>
+</div>
+
+<script>
+var N = {
+  S:{
+    5:{M:[[5,5],[3,3],[2,3],[3,4]],F:[[5,5],[3,3],[2,3],[4,5]]},
+    6:{M:[[5,5],[3,3],[2,3],[3,4]],F:[[5,5],[3,3],[3,3],[4,5]]},
+    7:{M:[[5,5],[3,3],[3,3],[3,4]],F:[[5,5],[3,3],[3,3],[4,5]]},
+    8:{M:[[5,5],[3,4],[3,3],[4,5]],F:[[5,5],[3,4],[3,3],[4,5]]},
+    9:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[3,4],[3,4],[4,5]]},
+    10:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[3,4],[4,4],[5,5]]},
+    11:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[3,4],[4,4],[5,5]]},
+    12:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[3,4],[4,4],[5,5]]},
+    13:{M:[[5,5],[3,4],[3,4],[5,5]],F:[[5,5],[3,4],[4,4],[5,5]]},
+    14:{M:[[5,5],[4,4],[3,4],[5,5]],F:[[5,5],[3,4],[4,4],[5,5]]}
+  },
+  P:{
+    5:{M:[[4,5],[2,3],[2,3],[3,4]],F:[[5,5],[3,3],[3,4],[4,5]]},
+    6:{M:[[4,5],[2,3],[2,3],[3,4]],F:[[5,5],[3,4],[3,4],[4,5]]},
+    7:{M:[[5,5],[3,3],[3,3],[3,4]],F:[[5,5],[3,4],[3,4],[4,5]]},
+    8:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[3,4],[3,4],[4,5]]},
+    9:{M:[[5,5],[3,4],[3,4],[4,5]],F:[[5,5],[4,4],[3,4],[4,5]]},
+    10:{M:[[5,5],[4,4],[4,4],[4,5]],F:[[5,5],[4,4],[4,4],[5,5]]},
+    11:{M:[[5,5],[4,4],[4,4],[4,5]],F:[[5,5],[4,4],[4,4],[5,5]]},
+    12:{M:[[5,5],[4,4],[4,4],[5,5]],F:[[5,5],[4,5],[4,4],[5,5]]},
+    13:{M:[[5,5],[4,5],[4,4],[5,5]],F:[[5,5],[4,5],[4,4],[5,5]]},
+    14:{M:[[5,5],[5,5],[4,4],[5,5]],F:[[5,5],[4,5],[4,4],[5,5]]}
+  }
+};
+
+var ids = ['sa','sp','sh','sb','pa','pp','ph','pb'];
+var names = ['Aptitude','Précision','Mouvements de tête','Mouvements du corps'];
+
+function byId(id){ return document.getElementById(id); }
+
+function statusFor(v,p16,p31){
+  if(v < p16){ return {k:'bad',label:'Déficitaire',txt:String(v)+'/5 < seuil P16 ('+p16+')'}; }
+  if(v < p31){ return {k:'frag',label:'Faible / fragile',txt:String(v)+'/5 : ≥ P16 ('+p16+') mais < P31 ('+p31+')'}; }
+  return {k:'ok',label:'Dans les attentes',txt:String(v)+'/5 ≥ seuil P31 ('+p31+')'};
+}
+
+function clinical(test,i,state){
+  if(state.k === 'ok'){ return ''; }
+  if(i===0){ return 'capacité à réaliser/maintenir la tâche '+(test==='S'?'saccadique':'de poursuite')+' inférieure aux attentes ; considérer aussi attention et compréhension'; }
+  if(i===1){
+    return test==='S'
+      ? 'précision saccadique fragile (hypo/hypermétries ou corrections plus marquées qu’attendu)'
+      : 'précision de poursuite fragile (refixations/pertes de cible plus fréquentes qu’attendu)';
+  }
+  if(i===2){ return 'compensation céphalique supérieure aux attentes pour l’âge'; }
+  return 'compensation corporelle supérieure aux attentes pour l’âge';
+}
+
+function contains(arr,val){
+  var i;
+  for(i=0;i<arr.length;i++){ if(arr[i]===val){ return true; } }
+  return false;
+}
+
+function uniqueJoin(arr){
+  var out=[], i, j, found;
+  for(i=0;i<arr.length;i++){
+    found=false;
+    for(j=0;j<out.length;j++){ if(out[j]===arr[i]){ found=true; break; } }
+    if(!found){ out.push(arr[i]); }
+  }
+  return out.join(' ; ');
+}
+
+function calc(){
+  try{
+    var vals=[], i, el, v;
+    for(i=0;i<ids.length;i++){
+      el=byId(ids[i]);
+      v=parseInt(el.value,10);
+      if(isNaN(v)){
+        byId('details').innerHTML='<div class="result frag"><b>Il manque au moins une note.</b><br>Renseigne les 8 valeurs de 1 à 5.</div>';
+        return false;
+      }
+      vals.push(v);
+    }
+
+    var age=parseInt(byId('age').value,10);
+    var sex=byId('sex').value;
+    var s=[vals[0],vals[1],vals[2],vals[3]];
+    var p=[vals[4],vals[5],vals[6],vals[7]];
+    var sTotal=s[0]+s[1]+s[2]+s[3];
+    var pTotal=p[0]+p[1]+p[2]+p[3];
+    var gTotal=sTotal+pTotal;
+
+    byId('sTot').innerHTML=String(sTotal);
+    byId('pTot').innerHTML=String(pTotal);
+    byId('gTot').innerHTML=String(gTotal);
+
+    var html='', issues=[], states=[];
+    var groups=[['S','Saccades',s],['P','Poursuites',p]];
+    var g,key,label,arr,p16,p31,st,extra;
+
+    for(g=0;g<groups.length;g++){
+      key=groups[g][0]; label=groups[g][1]; arr=groups[g][2];
+      html+='<h3>'+label+'</h3>';
+      for(i=0;i<4;i++){
+        p16=N[key][age][sex][i][0];
+        p31=N[key][age][sex][i][1];
+        st=statusFor(arr[i],p16,p31);
+        states.push(st.k);
+        extra=clinical(key,i,st);
+        if(extra!==''){ issues.push(extra); }
+        html+='<div class="result '+st.k+'"><span class="tag">'+names[i]+' — '+st.label+'</span><div class="detail">'+st.txt;
+        if(extra!==''){ html+='<br>'+extra; }
+        html+='</div></div>';
+      }
+    }
+    byId('details').innerHTML=html;
+
+    var global=byId('global');
+    if(contains(states,'bad')){
+      global.className='result bad';
+      global.innerHTML='<b>Profil : anomalie normative présente</b><br>Au moins un critère est sous le seuil P16.';
+    }else if(contains(states,'frag')){
+      global.className='result frag';
+      global.innerHTML='<b>Profil : fragilité présente</b><br>Aucun critère sous P16, mais au moins un critère est sous P31.';
+    }else{
+      global.className='result ok';
+      global.innerHTML='<b>Profil : dans les attentes</b><br>Les 8 critères atteignent ou dépassent les seuils P31.';
+    }
+
+    var sexTxt=(sex==='F')?'fille/femme':'garçon/homme';
+    var ageTxt=(age===14)?'14 ans et +':String(age)+' ans';
+    var concl='NSUCO ('+ageTxt+', '+sexTxt+') : saccades '+sTotal+'/20 ; poursuites '+pTotal+'/20 ; total descriptif '+gTotal+'/40.
+';
+    if(issues.length===0){
+      concl+='Les scores individuels se situent dans les attentes au regard des seuils P31 pour l’âge et le sexe.';
+    }else{
+      if(contains(states,'bad')){
+        concl+='Présence d’au moins une performance inférieure au seuil P16. ';
+      }else{
+        concl+='Présence d’une ou plusieurs performances faibles entre les seuils P16 et P31. ';
+      }
+      concl+='Éléments à retenir : '+uniqueJoin(issues)+'.';
+    }
+    concl+='
+Interprétation à confronter aux observations cliniques, au DEM et au retentissement fonctionnel.';
+    byId('conclusion').innerHTML=concl.replace(/
+/g,'<br>');
+    return false;
+  }catch(err){
+    byId('global').className='result bad';
+    byId('global').innerHTML='<b>Erreur de calcul.</b><br>'+String(err.message || err);
+    return false;
+  }
+}
+
+function resetAll(){
+  var i;
+  for(i=0;i<ids.length;i++){ byId(ids[i]).selectedIndex=0; }
+  byId('details').innerHTML='';
+  byId('conclusion').innerHTML='—';
+  byId('sTot').innerHTML='—';
+  byId('pTot').innerHTML='—';
+  byId('gTot').innerHTML='—';
+  byId('global').className='result';
+  byId('global').innerHTML='Renseigne les 8 notes pour obtenir l’interprétation.';
+  return false;
+}
+
+function copyConclusion(){
+  var txt=byId('conclusion').innerText || byId('conclusion').textContent;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt);
+  }else{
+    var ta=document.createElement('textarea');
+    ta.value=txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+  }
+  return false;
+}
+
+function attachEvents(){
+  var i;
+  for(i=0;i<ids.length;i++){
+    if(byId(ids[i])){
+      byId(ids[i]).onchange=calc;
+    }
+  }
+  if(byId('age')){ byId('age').onchange=calc; }
+  if(byId('sex')){ byId('sex').onchange=calc; }
+}
+if(window.addEventListener){ window.addEventListener('load',attachEvents,false); }
+else if(window.attachEvent){ window.attachEvent('onload',attachEvents); }
+else{ window.onload=attachEvents; }
+</script>
+
+</body></html>
